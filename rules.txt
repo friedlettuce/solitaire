@@ -1,0 +1,41 @@
+Card Environments:
+	(Tableau) Piles that make up main table
+	(Foundations) Four piles for each suit Ace->King
+	(Hand) Remaining cards not laid in tableau
+
+SETUP
+Tableau:
+	7 piles
+	Formation: left to right
+		start with placing 7:
+		place first card face up
+		place the rest to the end face down
+		repeat, each time starting one right until done
+Hand:
+	Remaining cards in deck
+
+*** Foundations and Waste don't have any at this point ***
+
+PLAY
+- Cards in tableau stacked on next highest card of alter color
+- Once card moved, if top card face down, face up
+- Ace needed to start foundation pile, has to follow suit Ace->K
+
+- If no cards played flip one from hand
+- Stack cards on top of eachother until no more in hand
+- Start hand over from the flipped cards
+
+- If space opens up in tableau, can fill with a king
+
+- Wins once suit sequences are accomplished
+
+
+THINGS TO BUILD:
+	card objects
+	card environment classes
+	Graphics
+	start of game logic
+	tableau behavior
+	foundation behavior
+	hand behavior
+	
