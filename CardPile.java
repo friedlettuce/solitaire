@@ -189,59 +189,6 @@ class TableauPile extends CardPile {
                 return;
             }
         addCard(topCard);
-        // get the cards for the build from the suit pile
-    while (!isEmpty())
-      {
-	// stop if we reached a card that is face down
-	if (!top().faceUp())
-	  break;
-
-	build.addCard(pop());
-      }
-
-    // We don't allow the user to play a King card
-    // that is at the bottom of a table pile
-    // to another table pile
-    if (build.top().isKing() && isEmpty())
-      {
-	while (!build.isEmpty())
-	  addCard(build.pop());
-	return;
-      }    
-
-    // if we have to play only one card
-    if (build.top() == topCard)
-      {
-	// put it back into the table pile
-	addCard(build.pop());
-
-	// we have already tried the suit piles
-        // see if any other table pile can take card
-        for (int i = 0; i < Solitaire.no_table_piles; i++)
-          if (Solitaire.tableau[i].canTake(topCard))
-            {
-              Solitaire.tableau[i].addCard(pop());
-              return;
-            }
-      }
-    else // we got ourselves a build to play
-      {
-	topCard = build.top();
-
-	// see if any other table pile can take this build
-	for (int i = 0; i < Solitaire.no_table_piles; i++)
-	  if (Solitaire.tableau[i].canTake(topCard))
-	    {
-	      while (!build.iEmpty())
-		Solitaire.tableau[i].addCard(build.pop());
-	      
-	      return;
-	    }
-	
-	// can't play the build?
-	// then we must restore our pile
-	while (!build.isEmpty())
-	  addCard(build.pop());
     }
 
 }
