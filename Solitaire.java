@@ -696,4 +696,5 @@ public class Solitaire extends Applet {
         for (int i = 0; i < no_card_piles; i++)
             allPiles[i].display(g);
     }
+    private class SolitaireFrame extends Frame{}
 }
