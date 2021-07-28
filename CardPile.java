@@ -105,4 +105,109 @@ public class CardPile
 			Solitaire.discardPile.addCard(pop());
 		}
 	}
+	class DiscardPile extends CardPile
+	{
+		DiscardPile (int x, int y)
+		{
+			super (x, y);
+		}
+		
+		public void addCard (Card aCard)
+		{
+			if (! aCard.faceUp())
+			{
+				aCard.flip();
+			}
+			super.addCard(aCard);
+		}
+		public void select (int tx, int ty)
+		{
+			if (isEmpty())
+			{
+				return;
+			}
+			Card topCard = pop();
+			for (int i = 0; i < 4; i++)
+				if (Solitaire.suitPile[i].canTake(topCard))
+				{
+					Solitaire.suitPile[i].addCard(topCard);
+					return;
+				}
+			for (int i = 0; i < 7; i++)
+				if (Solitaire.tableau[i].canTake(topCard))
+				{
+					Solitaire.tableau[i].addCard(topCard);
+					return;
+				}
+			addCard(topCard);
+		}
+	}
+	class TablePile extends CardPile
+	{
+		TablePile (int x, int y, int c)
+		{
+			super(x, y);
+			for (int i = 0; i < c; i++)
+			{
+				addCard(Solitaire.deckPile.pop());
+			}
+			top().flip();
+		}
+		
+		public boolean canTake (Card aCard)
+		{
+			if (isEmpty())
+			{
+				return aCard.rank() == 12;
+			}
+			Card topCard = top();
+			return (aCard.color() != topCard.color()) && (aCard.rank() == topCard.rank() - 1);
+		}
+		
+		public boolean includes (int tx, int ty)
+		{
+			return x <= tx && tx <= x + Card.width && y <= ty;
+		}
+		
+		public void display (Graphics g)
+		{
+			int localy = y;
+			for (Enumeration e = thePile.elements(); e.hashMoreElements();)
+			{
+				Card aCard = (Card) e.nextElement();
+				aCard.draw (g, x, localy);
+				localy += 35;
+			}
+		}
+		
+		public void select (int tx, int ty)
+		{
+			if (isEmpty())
+			{
+				return;
+			}
+			
+			Card topCard = top();
+			if (! topCard.faceUp())
+			{
+				topCard.flip();
+				return;
+			}
+			
+			topCard = pop();
+			for (int i = 0; i < 4; i++)
+				if (Solitaire.suitPile[i].canTake(topCard))
+				{
+					Solitaire.suitPile[i].addCard(topCard);
+					return;
+				}
+			for (int i = 0; i < 7; i++)
+				if (Solitaire.tableau[i].canTake(topCard))
+				{
+					Solitaire.tableau[i].addCard(topCard);
+					return;
+				}
+			addCard(topCard);
+		}
+	}
 };
