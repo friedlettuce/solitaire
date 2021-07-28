@@ -90,7 +90,19 @@ class DeckPile extends CardPile {
 
     public void select(int tx, int ty) {
         if (isEmpty()) {
-            return;
+            if (!Solitaire.discardPile.isEmpty()) {
+                while (!Solitaire.discardPile.isEmpty()) {
+                    addCard(Solitaire.discardPile.pop());
+                }
+
+                for (Card cards : thePile) {
+                    cards.flip();
+                }
+                Collections.shuffle(thePile);
+
+            }
+	else
+		return;
         }
         Solitaire.discardPile.addCard(pop());
     }
