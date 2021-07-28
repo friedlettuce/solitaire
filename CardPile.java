@@ -3,6 +3,7 @@ import java.util.Stack;
 import java.util.Random;
 import java.util.EmptyStackException;
 import java.util.Enumeration;
+import java.util.Collections;
 
 public class CardPile {
     protected int x;
