@@ -605,16 +605,6 @@ public class Solitaire extends Applet {
     static TablePile tableau[];
     static SuitPile suitPile[];
     static CardPile allPiles[];
-    private Frame window;
-
-    public static void main(String[] args){
-	Solitaire world = new Solitaire();
-    }
-    public Solitaire(){
-	window = new SolitaireFrame();
-	init();
-	window.show();
-    }
 
     protected void initialize() {
         // first allocate the arrays
@@ -696,5 +686,4 @@ public class Solitaire extends Applet {
         for (int i = 0; i < no_card_piles; i++)
             allPiles[i].display(g);
     }
-    private class SolitaireFrame extends Frame{}
 }
