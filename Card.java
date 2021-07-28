@@ -55,6 +55,11 @@ public class Card {
     public void flip() {
         faceup = !faceup;
     }
+     // true if card is king, false otherwise
+    public boolean isKing()
+    {
+        return rank == king;
+    }
 
     public Color color() {
         if (faceUp()) {
