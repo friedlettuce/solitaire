@@ -605,6 +605,16 @@ public class Solitaire extends Applet {
     static TablePile tableau[];
     static SuitPile suitPile[];
     static CardPile allPiles[];
+    private Frame window;
+
+    public static void main(String[] args){
+	Solitaire world = new Solitaire();
+    }
+    public Solitaire(){
+	window = new SolitaireFrame();
+	init();
+	window.show();
+    }
 
     protected void initialize() {
         // first allocate the arrays
