@@ -7,7 +7,7 @@ public class GraphicsTest {
         frame.setSize(1000, 800);
 
         Card card = new Card(1, 1);
-        frame.add(card);
+        card
         frame.setVisible(true);
     }
 }
