@@ -55,3 +55,7 @@ PLAY
 - If space opens up in tableau, can fill with a king
 - Wins once suit sequences are accomplished
 
+Sources
+http://www.it.uu.se/edu/course/homepage/oop/ht00/Local/Budd_Java/ftp.cs.orst.edu/pub/budd/java/solitaire/solit.pdf
+
+Used source as concept basis for program structure and functionality.
