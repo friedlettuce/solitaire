@@ -4,7 +4,7 @@ import java.util.Collections;
 
 // Card Pile and its children classes
 
-public class CardPile {
+public class Pile {
     // position of the pile
     protected int x;
     protected int y;
@@ -12,7 +12,7 @@ public class CardPile {
     // card of the pile
     protected Vector<Card> mPile;
 
-    CardPile(int x, int y) {
+    Pile(int x, int y) {
         // set postion and allocate for vector of cards
         this.x = x;
         this.y = y;
@@ -77,7 +77,7 @@ public class CardPile {
     }
 }
 
-class Foundation extends CardPile {
+class Foundation extends Pile {
     Foundation(int x, int y) {
         super(x, y);
     }
@@ -93,7 +93,7 @@ class Foundation extends CardPile {
 }
 
 // The deck starts with 52 and ends with 24
-class Deck extends CardPile {
+class Deck extends Pile {
 
     // insert card and shuffle them
     Deck(int x, int y) {
@@ -128,7 +128,7 @@ class Deck extends CardPile {
     }
 }
 
-class WastePile extends CardPile {
+class WastePile extends Pile {
     WastePile(int x, int y) {
         super(x, y);
     }
@@ -165,7 +165,7 @@ class WastePile extends CardPile {
 }
 
 // 7 Tableau piles
-class TableauPile extends CardPile {
+class TableauPile extends Pile {
 
     // last face up card
     protected Card breakPoint;
