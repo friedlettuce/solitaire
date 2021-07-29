@@ -1,47 +1,52 @@
 import java.awt.*;
-import java.util.Stack;
-import java.util.Random;
-import java.util.EmptyStackException;
-import java.util.Enumeration;
+import java.util.Vector;
 import java.util.Collections;
 
 public class CardPile {
     protected int x;
     protected int y;
-    protected Stack<Card> thePile;
+    protected Vector<Card> thePile;
 
     CardPile(int x, int y) {
         this.x = x;
         this.y = y;
-        thePile = new Stack<Card>();
+        thePile = new Vector<Card>();
     }
 
     public final Card top() {
-        return (Card) thePile.peek();
+        return (Card) thePile.get(thePile.size() - 1);
+    }
+
+    public final int getSize() {
+        return thePile.size();
     }
 
     public final boolean isEmpty() {
-        return thePile.empty();
+        return thePile.isEmpty();
     }
 
-    public final Card pop() {
+    public final Card getCard(int index) {
+        return thePile.get(index);
+    }
+
+    public final Card draw() {
         try {
-            return (Card) thePile.pop();
-        } catch (EmptyStackException e) {
+            return (Card) thePile.remove(thePile.size() - 1);
+        } catch (IndexOutOfBoundsException e) {
             return null;
         }
     }
 
-    public boolean includes(int tx, int ty) {
-        return x <= tx && tx <= x + Card.width && y <= ty && ty <= y + Card.height;
+    public boolean includes(int xBound, int yBound) {
+        return (x <= xBound && xBound <= x + Card.width && y <= yBound && yBound <= y + Card.height);
     }
 
-    public void select(int tx, int ty) {
+    public void select() {
 
     }
 
     public void addCard(Card aCard) {
-        thePile.push(aCard);
+        thePile.add(aCard);
     }
 
     public void display(Graphics g) {
@@ -52,7 +57,7 @@ public class CardPile {
             top().draw(g, x, y - 20);
     }
 
-    public boolean canTake(Card aCard) {
+    public boolean moveable(Card aCard) {
         return false;
     }
 }
@@ -62,38 +67,31 @@ class SuitPile extends CardPile {
         super(x, y);
     }
 
-    public boolean canTake(Card aCard) {
+    public boolean moveable(Card card) {
         if (isEmpty()) {
-            return aCard.rank() == 0;
+            return card.rank() == 0;
         }
         Card topCard = top();
-        return (aCard.suit() == topCard.suit()) && (aCard.rank() == 1 + topCard.rank());
+        return (card.suit() == topCard.suit()) && (card.rank() == 1 + topCard.rank());
     }
 }
 
-class DeckPile extends CardPile {
-    DeckPile(int x, int y) {
+class Deck extends CardPile {
+    Deck(int x, int y) {
         super(x, y);
 
         for (int i = 0; i < 4; i++)
             for (int j = 0; j <= 12; j++)
                 addCard(new Card(i, j));
 
-        Random random = new Random();
-        for (int i = 0; i < 52; i++) {
-            int j = Math.abs(random.nextInt()) % 52;
-
-            Object temp = thePile.elementAt(i);
-            thePile.setElementAt(thePile.elementAt(j), i);
-            thePile.setElementAt((Card) temp, j);
-        }
+        Collections.shuffle(thePile);
     }
 
-    public void select(int tx, int ty) {
+    public void select() {
         if (isEmpty()) {
             if (!Solitaire.discardPile.isEmpty()) {
                 while (!Solitaire.discardPile.isEmpty()) {
-                    addCard(Solitaire.discardPile.pop());
+                    addCard(Solitaire.discardPile.draw());
                 }
 
                 for (Card cards : thePile) {
@@ -101,11 +99,10 @@ class DeckPile extends CardPile {
                 }
                 Collections.shuffle(thePile);
 
-            }
-	else
-		return;
+            } else
+                return;
         }
-        Solitaire.discardPile.addCard(pop());
+        Solitaire.discardPile.addCard(draw());
     }
 }
 
@@ -121,75 +118,152 @@ class DiscardPile extends CardPile {
         super.addCard(aCard);
     }
 
-    public void select(int tx, int ty) {
-        if (isEmpty())
-            return;
-        Card topCard = pop();
-        for (int i = 0; i < 4; i++)
-            if (Solitaire.suitPile[i].canTake(topCard)) {
-                Solitaire.suitPile[i].addCard(topCard);
-                return;
-            }
-        for (int i = 0; i < 7; i++)
-            if (Solitaire.tableau[i].canTake(topCard)) {
-                Solitaire.tableau[i].addCard(topCard);
-                return;
-            }
-        addCard(topCard);
-    }
-}
+    public void select() {
 
-class TableauPile extends CardPile {
-    TableauPile(int x, int y, int c) {
-        super(x, y);
-        for (int i = 0; i < c; i++)
-            addCard(Solitaire.deckPile.pop());
-        top().flip();
-    }
-
-    public boolean canTake(Card aCard) {
-        if (isEmpty())
-            return aCard.rank() == 12;
-        Card topCard = top();
-        return (aCard.color() != topCard.color()) && (aCard.rank() == topCard.rank() - 1);
-    }
-
-    public boolean includes(int tx, int ty) {
-        return (x <= tx && tx <= x + Card.width && y <= ty);
-    }
-
-    public void display(Graphics g) {
-        int localy = y;
-        for (Enumeration<Card> e = thePile.elements(); e.hasMoreElements();) {
-            Card aCard = (Card) e.nextElement();
-            aCard.draw(g, x, localy);
-            localy += 35;
+        if (!isEmpty()) {
+            Card topCard = draw();
+            for (int i = 0; i < 4; i++)
+                if (Solitaire.suitPile.get(i).moveable(topCard)) {
+                    Solitaire.suitPile.get(i).addCard(topCard);
+                    return;
+                }
+            for (int i = 0; i < 7; i++)
+                if (Solitaire.tableau.get(i).moveable(topCard)) {
+                    Solitaire.tableau.get(i).addCard(topCard);
+                    return;
+                }
+            addCard(topCard);
         }
     }
 
-    public void select(int tx, int ty) {
-        if (isEmpty())
+}
+
+class TableauPile extends CardPile {
+    protected Card breakPoint;
+
+    TableauPile(int x, int y, int c) {
+        super(x, y);
+        for (int i = 0; i < c; i++) {
+            Card draw = Solitaire.deckPile.draw();
+            addCard(draw);
+            if (i == c - 1)
+                breakPoint = draw;
+        }
+        top().flip();
+    }
+
+    public boolean moveable(Card card) {
+
+        if (isEmpty()) {
+            if (card.rank() == 12)
+                return true;
+            else
+                return false;
+        }
+        Card top = top();
+
+        boolean retVal = (card.color() != top.color()) && (card.rank() == top.rank() - 1);
+        return retVal;
+    }
+
+    public boolean bottomMove(Card breaker) {
+        System.out.println("this pile is: " + isEmpty());
+        if (isEmpty()) {
+            if (breaker.rank() == 12)
+                return true;
+            else
+                return false;
+        }
+
+        Card top = top();
+
+        boolean retVal = false;
+        if (breakPoint != breaker) {
+            retVal = (breaker.color() != top.color()) && (breaker.rank() == top.rank() - 1);
+            System.out.println("Pile with " + (breaker.rank() + 1) + " moveable to top card with " + (top.rank() + 1)
+                    + "is " + retVal);
+            System.out.println("Pile Moveable: " + retVal);
+        }
+        return retVal;
+    }
+
+    public boolean includes(int xBound, int yBound) {
+        return (x <= xBound && xBound <= x + Card.width && y <= yBound);
+    }
+
+    public void display(Graphics g) {
+        int offset = y;
+        for (int i = 0; i < thePile.size(); i++) {
+            Card aCard = (Card) thePile.get(i);
+            aCard.draw(g, x + 10, offset);
+            offset += 30;
+        }
+    }
+
+    public void select() {
+        System.out.println(breakPoint.rank());
+        if (isEmpty()) {
             return;
+        }
 
         Card topCard = top();
         if (!topCard.faceUp()) {
             topCard.flip();
+            breakPoint = topCard;
             return;
         }
 
-        topCard = pop();
+        boolean allFaceUp = true;
+        for (Card card : thePile) {
+            if (card.faceUp() == false) {
+                allFaceUp = false;
+                break;
+            }
+        }
+        if (allFaceUp)
+            breakPoint = getCard(0);
+
+        // topCard = draw();
         for (int i = 0; i < 4; i++)
-            if (Solitaire.suitPile[i].canTake(topCard)) {
-                Solitaire.suitPile[i].addCard(topCard);
+            if (Solitaire.suitPile.get(i).moveable(topCard)) {
+                Solitaire.suitPile.get(i).addCard(draw());
                 return;
             }
 
-        for (int i = 0; i < 7; i++)
-            if (Solitaire.tableau[i].canTake(topCard)) {
-                Solitaire.tableau[i].addCard(topCard);
+        for (int i = 0; i < 7; i++) {
+            if (Solitaire.tableau.get(i).moveable(topCard)) {
+                Solitaire.tableau.get(i).addCard(draw());
+                return;
+            } else if (Solitaire.tableau.get(i).bottomMove(this.breakPoint)) {
+                Solitaire.tableau.get(i).addPile(getBottomPile());
                 return;
             }
-        addCard(topCard);
+        }
+        // addCard(topCard);
+    }
+
+    public void addPile(Vector<Card> pile) {
+        for (Card card : pile) {
+            addCard(card);
+        }
+    }
+
+    public Vector<Card> getBottomPile() {
+        Vector<Card> faceDowns = new Vector<Card>();
+        Vector<Card> faceUps = new Vector<Card>();
+
+        for (Card card : thePile) {
+            if (card.faceUp() == false)
+                faceDowns.add(card);
+            else
+                faceUps.add(card);
+        }
+
+        thePile.removeAllElements();
+        thePile = new Vector<Card>(faceDowns);
+
+        return faceUps;
+
     }
 
 }
