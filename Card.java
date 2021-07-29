@@ -20,9 +20,9 @@ public class Card {
     private int r;
     private int s;
 
-    Card(int sv, int rv) {
-        s = sv;
-        r = rv;
+    Card(int suit, int rank) {
+        s = suit;
+        r = rank;
         faceup = false;
 
         String ranks[] = { "a", "2", "3", "4", "5", "6", "7", "8", "9", "t", "j", "q", "k" };
@@ -69,8 +69,8 @@ public class Card {
     public void draw(Graphics g, int x, int y) {
 
         g.clearRect(x, y + 20, width, height);
-        g.setColor(Color.black);
         g.drawRect(x, y + 20, width, height);
+        g.setColor(Color.black);
 
         g.setColor(color());
         if (faceUp()) {
