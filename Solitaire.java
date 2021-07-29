@@ -9,79 +9,82 @@ import java.util.ArrayList;
 import java.awt.Graphics;
 
 public class Solitaire {
+
+    // Static variables to share within this class and the CardPile class
     public static Deck deckPile;
-    public static DiscardPile discardPile;
+    public static WastePile wastePile;
     public static ArrayList<TableauPile> tableau;
-    public static ArrayList<SuitPile> suitPile;
-    public static ArrayList<CardPile> allPiles;
+    public static ArrayList<Foundation> foundation;
+    public static ArrayList<CardPile> totalPiles;
     private JFrame game;
 
+    // Create an instance in main
     public static void main(String args[]) {
         new Solitaire();
     }
 
+    // run the game
     public Solitaire() {
-        game = new SolitaireFrame();
-        init();
+        game = new Game();
+        initialize();
         game.setVisible(true);
     }
 
-    public void init() {
-        allPiles = new ArrayList<CardPile>();
-        suitPile = new ArrayList<SuitPile>();
+    public void initialize() {
+
+        totalPiles = new ArrayList<CardPile>();
+        foundation = new ArrayList<Foundation>();
         tableau = new ArrayList<TableauPile>();
 
+        // set bounds for DeckPile and add it
         deckPile = new Deck(15, 45);
-        allPiles.add(deckPile);
-        discardPile = new DiscardPile(100, 45);
-        allPiles.add(discardPile);
+        totalPiles.add(deckPile);
+
+        // set bounds to WastePile and add it
+        wastePile = new WastePile(100, 45);
+        totalPiles.add(wastePile);
+
+        // place it in foundation
         for (int i = 0; i < 4; i++) {
-            suitPile.add(new SuitPile(250 + (Card.width + 10) * i, 40));
-            allPiles.add(suitPile.get(i));
+            foundation.add(new Foundation(250 + (Card.width + 10) * i, 40));
+            totalPiles.add(foundation.get(i));
         }
 
+        // place it in tableau
         for (int i = 0; i < 7; i++) {
             tableau.add(new TableauPile(15 + (Card.width + 5) * i, Card.height + 40, i + 1));
-            allPiles.add(tableau.get(i));
+            totalPiles.add(tableau.get(i));
         }
 
     }
 
-    class SolitaireFrame extends JFrame {
+    // Frame for the game
+    class Game extends JFrame {
 
-        private class Mouse extends MouseAdapter {
-            public void mousePressed(MouseEvent e) {
-                int x = e.getX();
-                int y = e.getY();
-                for (int i = 0; i < 13; i++)
-                    if (allPiles.get(i).includes(x, y)) {
-                        allPiles.get(i).select();
-                        repaint();
-                    }
-
-                if (checkWin())
-                    JOptionPane.showMessageDialog(null, "You won!");
-            }
-        }
-
-        public SolitaireFrame() {
-            setSize(630, 600);
+        // set up the frame
+        public Game() {
+            // resolution and the frame
+            setSize(630, 800);
             setTitle("Solitaire");
+
+            // add the listener for the clicks
             addMouseListener(new Mouse());
+
+            // new game buton
             JButton restartButton = new JButton("New Game");
             restartButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    init();
+                    initialize();
                     repaint();
                 }
             });
 
+            // panel for the buttons, new game and close
             JPanel panel = new JPanel();
-
             add("South", panel);
-
             panel.add(restartButton);
 
+            // close button to close the game on click
             JButton closeButton = new JButton("Close");
             closeButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -91,17 +94,39 @@ public class Solitaire {
             panel.add(closeButton);
         }
 
-        public void paint(Graphics g) {
-            super.paint(g);
-            for (int i = 0; i < 13; i++) {
-                allPiles.get(i).display(g);
+        // mouse listener
+        private class Mouse extends MouseAdapter {
+            public void mousePressed(MouseEvent e) {
+                int xPos = e.getX();
+                int yPos = e.getY();
+
+                // check for bounds with all the piles
+                for (int i = 0; i < 13; i++)
+                    if (totalPiles.get(i).withinBound(xPos, yPos)) {
+                        totalPiles.get(i).click();
+                        repaint();
+                    }
+
+                // check win everytime a card is moved, win message is displayed when the game
+                // is won
+                if (checkWin())
+                    JOptionPane.showMessageDialog(null, "You won!");
             }
         }
 
+        // show the graphics to the screen
+        public void paint(Graphics g) {
+            super.paint(g);
+            for (int i = 0; i < 13; i++) {
+                totalPiles.get(i).display(g);
+            }
+        }
+
+        // check if the game is won
         public boolean checkWin() {
             boolean win = false;
             for (int i = 0; i < 4; i++) {
-                int size = suitPile.get(i).getSize();
+                int size = foundation.get(i).getSize();
                 if (size == 13)
                     win = true;
                 else {
