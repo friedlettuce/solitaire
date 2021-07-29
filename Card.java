@@ -7,30 +7,43 @@ import java.net.URL;
 import javax.imageio.*;
 
 public class Card {
-    public final static int width = 70;
-    public final static int height = 100;
-    public final static int heart = 0;
-    public static int spade = 1;
-    public final static int diamond = 2;
-    public final static int club = 3;
+
+    // Suits
+    final public static int heart = 0;
+    final public static int spade = 1;
+    final public static int diamond = 2;
+    final public static int club = 3;
+
+    // Image for the cards
     BufferedImage image;
     BufferedImage back;
 
-    private boolean faceup;
+    // The height and width of the card graphics
+    final public static int width = 70;
+    final public static int height = 100;
+
+    // Values of the card
+    private boolean faceUp;
     private int r;
     private int s;
 
+    // Constructor
     Card(int suit, int rank) {
         s = suit;
         r = rank;
-        faceup = false;
+        faceUp = false;
 
+        // Information for the picture
+
+        // query for the retrieving image
         String ranks[] = { "a", "2", "3", "4", "5", "6", "7", "8", "9", "t", "j", "q", "k" };
         String suits[] = { "h", "s", "d", "c" };
-        System.out.println(ranks[r] + suits[s]);
+
+        // get path
         URL url = getClass().getResource("/images/" + ranks[r] + suits[s] + ".gif");
         URL backUrl = getClass().getResource("/images/b.gif");
-        System.out.println(url);
+
+        // set image to path
         try {
             image = ImageIO.read(url);
             back = ImageIO.read(backUrl);
@@ -40,39 +53,39 @@ public class Card {
         }
     }
 
+    // card ranks
     public int rank() {
         return r;
     }
 
+    // card suit
     public int suit() {
         return s;
     }
 
+    // face up true or false
     public boolean faceUp() {
-        return faceup;
+        return faceUp;
     }
 
+    // flip the card
     public void flip() {
-        faceup = !faceup;
+        faceUp = !faceUp;
     }
 
+    // get color of the card
     public Color color() {
         if (faceUp()) {
-            if (suit() == heart || suit() == diamond) {
-                return Color.red;
-            } else
+            if (suit() == club || suit() == spade) {
                 return Color.black;
+            } else
+                return Color.red;
         }
-        return null;
+        return Color.white;
     }
 
+    // draw the image
     public void draw(Graphics g, int x, int y) {
-
-        g.clearRect(x, y + 20, width, height);
-        g.drawRect(x, y + 20, width, height);
-        g.setColor(Color.black);
-
-        g.setColor(color());
         if (faceUp()) {
             g.drawImage(image, x, y + 20, width, height, null);
 
