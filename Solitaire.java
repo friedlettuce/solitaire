@@ -10,12 +10,12 @@ import java.awt.Graphics;
 
 public class Solitaire {
 
-    // Static variables to share within this class and the CardPile class
+    // Static variables to share within this class and the Pile class
     public static Deck deckPile;
     public static WastePile wastePile;
     public static ArrayList<TableauPile> tableau;
     public static ArrayList<Foundation> foundation;
-    public static ArrayList<CardPile> totalPiles;
+    public static ArrayList<Pile> totalPiles;
     private JFrame game;
 
     // Create an instance in main
@@ -32,7 +32,7 @@ public class Solitaire {
 
     public void initialize() {
 
-        totalPiles = new ArrayList<CardPile>();
+        totalPiles = new ArrayList<Pile>();
         foundation = new ArrayList<Foundation>();
         tableau = new ArrayList<TableauPile>();
 
