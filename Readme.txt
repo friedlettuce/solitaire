@@ -6,7 +6,7 @@ Card:
     Card object to keep image data, rank, and suit informations
 
 CardPiles:
-    The Parent Calass for all the piles
+    The Parent Class for all the piles
 
 Deck:
 	An initializing deck that ends up with 24 as a Hand Pile in 
