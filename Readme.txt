@@ -5,7 +5,7 @@ Group Members: Gam San, Cullen Hemsouvanh, Garret Anderson
 Card:
     Card object to keep image data, rank, and suit informations
 
-CardPiles:
+Piles:
     The Parent Class for all the piles
 
 Deck:
